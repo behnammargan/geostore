@@ -1,19 +1,19 @@
 /*
  *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
- * 
+ *
  *  GPLv3 + Classpath exception
- * 
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
- * 
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- * 
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,6 +27,7 @@ import it.geosolutions.geostore.core.security.password.GeoStorePasswordEncoder;
 import it.geosolutions.geostore.core.security.password.PwEncoder;
 import it.geosolutions.geostore.init.model.InitUserList;
 import it.geosolutions.geostore.services.CategoryService;
+import it.geosolutions.geostore.services.LayerMetadataService;
 import it.geosolutions.geostore.services.UserGroupService;
 import it.geosolutions.geostore.services.UserService;
 import it.geosolutions.geostore.services.exception.BadRequestServiceEx;
@@ -47,7 +48,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * 
+ *
  * @author ETj (etj at geo-solutions.it)
  */
 public class GeoStoreInit implements InitializingBean {
@@ -58,12 +59,14 @@ public class GeoStoreInit implements InitializingBean {
 
     protected CategoryService categoryService;
 
+    protected LayerMetadataService layerMetadataService;
+
     protected UserGroupService userGroupService;
-    
+
     protected File userListInitFile = null;
 
     protected File categoryListInitFile = null;
-    
+
     protected File userGroupListInitFile = null;
 
     /**
@@ -86,7 +89,7 @@ public class GeoStoreInit implements InitializingBean {
             LOGGER.warn("No category found.");
             if (categoryListInitFile != null) {
                 LOGGER.warn("Initializing categories from file " + categoryListInitFile);
-                initCategories(categoryListInitFile);	
+                initCategories(categoryListInitFile);
             } else {
                 LOGGER.info("No category initializer defined.");
             }
@@ -105,9 +108,9 @@ public class GeoStoreInit implements InitializingBean {
             }
         } else {
             LOGGER.info("UsersGroup already in db: " + userGroupCnt);
-            
+
         }
-        
+
         long userCnt = userService.getCount(null);
         if (userCnt == 0) {
             LOGGER.warn("No user found.");
@@ -121,11 +124,11 @@ public class GeoStoreInit implements InitializingBean {
             LOGGER.info("Users already in db: " + userCnt);
         }
     }
-    
+
     private void initPasswordEncoding(){
     	LOGGER.info("=== Set up the security system   ====");
     	LOGGER.info("Encoding Type:" + passwordEncoder.getEncodingType());
-        
+
     	PwEncoder.setEncoder(this.passwordEncoder);
     	//check and convert passwords
     	try {
@@ -133,8 +136,8 @@ public class GeoStoreInit implements InitializingBean {
 			if(users != null && users.size()>0){
 				//check password encription of the first user availabe
 				boolean responsible = this.passwordEncoder.isResponsibleForEncoding(users.get(0).getPassword());
-				
-				//if the current password encoder is the responsible for the encoding of the password 
+
+				//if the current password encoder is the responsible for the encoding of the password
 				//we suppose the conversion is already happended
 				if(responsible) return;
 				LOGGER.warn("=======================================================================================");
@@ -160,13 +163,13 @@ public class GeoStoreInit implements InitializingBean {
 								LOGGER.info("UPDATED USER PASSWORD for the user:"+u.getName());
 							} catch (NotFoundServiceEx e1) {
 								LOGGER.error("===> ERROR updating user password for user" + u.getName() );
-								
+
 							}
 						}
 					}
 					LOGGER.info("Password conversion finished!");
 				}
-				
+
 			}
 		} catch (BadRequestServiceEx e) {
 			//error getting users is not a problem at this stage.
@@ -234,7 +237,7 @@ public class GeoStoreInit implements InitializingBean {
             throw new RuntimeException("Error while initting users.");
         }
     }
-    
+
     private void initUsersGroup(File file) throws NotFoundServiceEx, BadRequestServiceEx {
         try {
             userGroupService.insertSpecialUsersGroups();
@@ -298,7 +301,7 @@ public class GeoStoreInit implements InitializingBean {
     public void setCategoryListInitFile(File categoryListInitFile) {
         this.categoryListInitFile = categoryListInitFile;
     }
-    
+
     public void setUserGroupListInitFile(File userGroupListInitFile) {
         this.userGroupListInitFile = userGroupListInitFile;
     }
@@ -309,17 +312,21 @@ public class GeoStoreInit implements InitializingBean {
         this.categoryService = categoryService;
     }
 
+    public void setLayerMetadataService(LayerMetadataService layerMetadataService) {
+        this.layerMetadataService = layerMetadataService;
+    }
+
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
-    
+
 
     public void setUserGroupService(UserGroupService userGroupService) {
         this.userGroupService = userGroupService;
     }
-    
+
     // ==========================================================================
-    
+
     public GeoStorePasswordEncoder getPasswordEncoder() {
 		return passwordEncoder;
 	}

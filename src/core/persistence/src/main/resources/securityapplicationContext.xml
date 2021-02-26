@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:aop="http://www.springframework.org/schema/aop"
 	   xsi:schemaLocation="
@@ -10,7 +10,7 @@
        default-autowire="byName">
 
 	<context:annotation-config />
-	
+
 <!--	<aop:aspectj-autoproxy proxy-target-class="true"/>	-->
 
     <!--=====================================================================-->
@@ -33,7 +33,7 @@
 		factory-method="getInstanceForEntityManagerFactory">
 		<constructor-arg ref="geostoreEntityManagerFactory" />
 	</bean>
-	
+
     <!--=====================================================================-->
     <!-- DAOs -->
     <!--=====================================================================-->
@@ -41,39 +41,43 @@
 	<bean id="storedDataDAO" class="it.geosolutions.geostore.core.dao.impl.StoredDataDAOImpl">
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 	</bean>
-	
+
 	<bean id="resourceDAO" class="it.geosolutions.geostore.core.dao.impl.ResourceDAOImpl">
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 	</bean>
-	
+
 	<bean id="attributeDAO" class="it.geosolutions.geostore.core.dao.impl.AttributeDAOImpl" >
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 	</bean>
-	
+
 	<bean id="categoryDAO" class="it.geosolutions.geostore.core.dao.impl.CategoryDAOImpl" >
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 	</bean>
-	
+
+	<bean id="layerMetadataDAO" class="it.geosolutions.geostore.core.dao.impl.LayerMetadataDAOImpl" >
+		<property name="searchProcessor" ref="geostoreSearchProcessor" />
+	</bean>
+
 	<bean id="userAttributeDAO" class="it.geosolutions.geostore.core.dao.impl.UserAttributeDAOImpl" >
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 	</bean>
-	
+
 	<bean id="userDAO" class="it.geosolutions.geostore.core.dao.impl.UserDAOImpl" >
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 	</bean>
-	
+
 	<bean id="userGroupDAO" class="it.geosolutions.geostore.core.dao.impl.UserGroupDAOImpl" >
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 	</bean>
-	
+
 	<bean id="securityDAO" class="it.geosolutions.geostore.core.dao.impl.SecurityDAOImpl" >
 		<property name="searchProcessor" ref="geostoreSearchProcessor" />
 		<property name="userGroupDAO" ref="userGroupDAO"/>
 	</bean>
-	
+
 	<bean id="externalSecurityDAO" class="it.geosolutions.geostore.core.dao.impl.ExternalSecurityDAOImpl" >
         <property name="searchProcessor" ref="geostoreSearchProcessor" />
         <property name="userGroupDAO" ref="userGroupDAO"/>
     </bean>
-	
+
 </beans>
